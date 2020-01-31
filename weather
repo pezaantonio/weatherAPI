@@ -1,0 +1,80 @@
+# Anthony Peza
+# Python Programming
+#
+# The purpose of this app is to practice API's and develop an application
+import tkinter as tk
+import requests
+
+# Constant Functions #
+ht = 500 # height of main window
+wd = 650 # width of main window
+bHt = 30 # button height
+bWd = 250 # button width
+eHt = 30 # entry height
+eWd = 150 # entry width
+fHt = 30 # frame height
+fWd = 400 # frame width
+lfHt = 300 # lower frame height
+lfWd = 500 # lower frame width
+
+# Functions #
+
+def formatResponse(currentWeather):
+    try:
+        name = currentWeather['name'] # This is accessing the name key from the json response
+        desc = currentWeather['weather'][0]['description'] # This is accessing the weather and description fomr the json
+        temp = currentWeather['main']['temp'] # This is grabbing the temperature using the main key from the dictionary
+
+        final = 'City: %s \nConditions: %s \nTemperature: %s' % (name, desc, temp) # this is just the format
+    except:
+        final = "There was a problem retrieving that information"
+
+    return final
+
+def getWeather(city):
+    weatherKey = "b3336d4ff1b0a6419659d25ef893d6f2" # This is my personal API key for openweather.org
+    url = "https://api.openweathermap.org/data/2.5/weather" # This is the API
+    params = {'APPID': weatherKey, 'q': city, 'units': 'imperial'}
+    response = requests.get(url, params = params) # This response is applying the above parameters to the API request
+    currentWeather = response.json() # this is the JSON file generated from the API request
+
+    results['text'] = formatResponse(currentWeather) # Applying the json results to the format response function
+    print(currentWeather)
+
+# Graphics #
+window = tk.Tk()
+window.title("Weather")
+
+canvas = tk.Canvas(window, height = ht, width = wd)
+canvas.pack()
+
+upperFrame = tk.Frame(window, bg = "#9DF1E0", bd = 5)
+upperFrame.place(height = fHt, width = fWd, relx = .5, rely = .1, anchor = 'n')
+
+myButton = tk.Button(upperFrame, text = "Get Weather", command = lambda: getWeather(areaEntry.get()))
+myButton.place(relx = 0.7, rely = .06, relwidth = .3, relheight = 1)
+
+areaEntry = tk.Entry(upperFrame, font = ("Comic Sans MS", 12))
+areaEntry.place(relwidth = 0.65, relheight = 1)
+
+lowerFrame = tk.Frame(window, bg = "#9DF1E0", bd = 5)
+lowerFrame.place(height = lfHt, width = lfWd, relx = .5, rely = .3, anchor = 'n')
+
+results = tk.Label(lowerFrame, font = ("Comic Sans MS", 12))
+results.place(relx = .5, relheight = 1, relwidth = 1, anchor = 'n')
+
+window.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
